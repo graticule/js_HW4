@@ -18,7 +18,8 @@ function fileAppender(name) {
 
 function question(count = 1) {
     rl.question(`Попытка номер ${count} (q - выход)\n`, (userGuess) => {
-        let skip = false;
+        const userGuessNumber = +userGuess;
+
         let isFinal = false;
 
         appender(`Попытка ${count}: '${userGuess}'\n`);
@@ -27,34 +28,29 @@ function question(count = 1) {
         if (userGuess === "q") {
             response = "Выход.\n";
             isFinal = true;
-            skip = true;
         } else if (!userGuess.trim()) {
             response = "Вы ничего не ввели.\n";
-            skip = true;
+        } else if (isNaN(userGuessNumber)) {
+            response = "Вы ввели не число.\n";
+        } else if (userGuessNumber === numberToGuess) {
+            response = `Вы угадали число с ${count}-го раза.`;
+            isFinal = true;
+        } else if (userGuessNumber < numberToGuess) {
+            response = `Загаданное число больше ${userGuessNumber}\n`;
+        } else if (userGuessNumber > numberToGuess) {
+            response = `Загаданное число меньше ${userGuessNumber}\n`;
         }
-        if (!skip) {
-            userGuess = +userGuess
-            if (isNaN(userGuess)) {
-                response = "Вы ввели не число.\n";
-                skip = true;
-            } else if (userGuess === numberToGuess) {
-                response = "Вы угадали число за ${count} попыток";
-                isFinal = true;
-            } else if (userGuess < numberToGuess) {
-                response = "Загаданное число больше ${userGuess}$\n";
-            } else if (userGuess > numberToGuess) {
-                response = "Загаданное число меньше ${userGuess}$\n";
-            }
-        }
+
         rl.write(response);
         appender(`Ответ: ${response}`);
+
         if (isFinal) {
             rl.close();
             return
         }
-        if (!skip) {
-            count++;
-        }
+
+        count++;
+        
         question(count);
     })
 };
