@@ -1,5 +1,5 @@
 function getPasswordChecker(password) {
-    return string => string === password;
+    return userInput => userInput === password;
 }
 
 const check_aB1 = getPasswordChecker("aB1");
